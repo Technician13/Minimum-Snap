@@ -17,6 +17,12 @@ iostream
 -
 Eigen/Dense
 -
+vector
+-
+math.h
+-
+string
+-
 
 /home/donglin/MinimumSnap Traj/MinimumSnap_OSQP/main.cpp
 MiniSnap.hpp

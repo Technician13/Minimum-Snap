@@ -1,7 +1,7 @@
 /*
  * @Author: Technician13
  * @Date: 2021-10-03 14:03:49
- * @LastEditTime: 2021-10-03 14:39:10
+ * @LastEditTime: 2021-10-04 17:02:14
  * @LastEditors: Technician13
  * @Description: 
  */
@@ -12,23 +12,32 @@
 #include <osqp.h>
 #include <iostream>    
 #include <Eigen/Dense>
+#include <vector>
+#include <math.h>
+#include <string>
 
 class MiniSnap
 {
     private:
-        c_float P_x[12]{ 4800.0, 1440.0, 1440.0, 576.0, 
-                         4800.0 * 7.0, 1440.0 * 3.0, 1440.0 * 3.0, 576.0, 
-                         4800.0 * 19.0, 1440.0 * 5.0, 1440.0 * 5.0, 576.0 };
-        c_int   P_nnz  = 12;
-        c_int   P_i[12]{ 0, 1, 0, 1, 
-                         6, 7, 6, 7, 
-                         12, 13, 12, 13 };
-        c_int   P_p[19]{ 0, 2, 4, 4, 4, 4, 4, 
-                         6, 8, 8, 8, 8, 8, 
-                         10, 12, 12, 12, 12, 12 };
-        c_float q[18]{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+        c_float *P_x;
+        c_int    P_nnz;
+        c_int   *P_i;
+        c_int   *P_p;
+        c_float *q;
+        //c_float *A_x;
+        // c_float P_x[12]{ 4800.0, 1440.0, 1440.0, 576.0, 
+        //                  4800.0 * 7.0, 1440.0 * 3.0, 1440.0 * 3.0, 576.0, 
+        //                  4800.0 * 19.0, 1440.0 * 5.0, 1440.0 * 5.0, 576.0 };
+        // c_int   P_nnz  = 12;
+        // c_int   P_i[12]{ 0, 1, 0, 1, 
+        //                  6, 7, 6, 7, 
+        //                  12, 13, 12, 13 };
+        // c_int   P_p[19]{ 0, 2, 4, 4, 4, 4, 4, 
+        //                  6, 8, 8, 8, 8, 8, 
+        //                  10, 12, 12, 12, 12, 12 };
+        // c_float q[18]{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+        //                0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        //                0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
         c_float A_x[99]{ 1.0, 5.0, 20.0, 5.0, 
                          1.0, 4.0, 12.0, 4.0,
                          1.0, 3.0, 6.0,  3.0,
@@ -72,12 +81,17 @@ class MiniSnap
         c_int n = 18;
         c_int m = 15;
 
+        const int segment;
+
+        std::vector<double> t;
+        double T;
+
     protected:
 
     public:
-        MiniSnap(void);
+        MiniSnap(int p_segment);
         virtual ~MiniSnap(void);
-        void SetParas();
+        void SetParas(std::vector<double> p_proportion, double p_T);
         void SolveOpt();
         void PrintInfo();
 };
