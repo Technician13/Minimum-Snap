@@ -1,7 +1,7 @@
 /*
  * @Author: Technician13
  * @Date: 2021-10-03 14:03:27
- * @LastEditTime: 2021-10-05 09:30:50
+ * @LastEditTime: 2021-10-05 11:06:30
  * @LastEditors: Technician13
  * @Description: 
  */
@@ -233,24 +233,14 @@ void MiniSnap::SolveOpt()
 
     std::cout<<"================================================================================================="<<std::endl;
     std::cout << "res: " <<std::endl<<std::endl;
-    std::cout << work->solution->x[0] << " " 
-                << work->solution->x[1] << " " 
-                << work->solution->x[2] << " "
-                << work->solution->x[3] << " "
-                << work->solution->x[4] << " "
-                << work->solution->x[5] << std::endl << std::endl;
-    std::cout << work->solution->x[6] << " " 
-                << work->solution->x[7] << " " 
-                << work->solution->x[8] << " "
-                << work->solution->x[9] << " "
-                << work->solution->x[10] << " "
-                << work->solution->x[11] << std::endl << std::endl;
-    std::cout << work->solution->x[12] << " " 
-                << work->solution->x[13] << " " 
-                << work->solution->x[14] << " "
-                << work->solution->x[15] << " "
-                << work->solution->x[16] << " "
-                << work->solution->x[17] << std::endl;
+    for(int i = 0 ; i < segment ; i++)
+    {
+        for(int j = 0 ; j < 6 ; j++)
+        {
+            std::cout << work->solution->x[6 * i + j] << " ";
+        }
+        std::cout << std::endl << std::endl;
+    }
     std::cout<<"================================================================================================="<<std::endl;
 
     // Clean workspace
