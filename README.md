@@ -19,5 +19,5 @@ make -j
 ./MINI_SNAP
 ```
 This is the result of project in `MinimumSnap_OSQP`:           
-![image]( https://github.com/Technician13/MinimumSnap/blob/master/MinimumSnap_OSQP/res/res_1.png)
+![image]( https://github.com/Technician13/MinimumSnap/blob/master/MinimumSnap_OSQP/res/res_1.png)              
 We can  find that the result is consistent with the one in `MinimumSnap_MATLAB`.
