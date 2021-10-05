@@ -9,7 +9,7 @@ to verify the higher-order continuity of this trajectory planning method.
 ```
 Untitled
 ```
-* `MinimumSnap_OSQP` contains the version using OSQP 0.4.1, download the project run the following command, OSQP will solve the problem quickly.In this project, we use the first demo in 
+* `MinimumSnap_OSQP` contains the version using OSQP 0.4.1 & Eigen, download the project run the following command, OSQP will solve the problem quickly.In this project, we use the first demo in 
 `MinimumSnap_MATLAB` to verify that the code is correct.
 ```
 cd MinimumSnap_OSQP
