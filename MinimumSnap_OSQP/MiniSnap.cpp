@@ -1,7 +1,7 @@
 /*
  * @Author: Technician13
  * @Date: 2021-10-03 14:03:27
- * @LastEditTime: 2021-10-04 17:27:49
+ * @LastEditTime: 2021-10-05 09:30:50
  * @LastEditors: Technician13
  * @Description: 
  */
@@ -20,7 +20,10 @@ MiniSnap::MiniSnap(int p_segment):segment(p_segment)
      * (segment + 1)个速度约束共(1 + 5 * segment)
      * 最后时刻的加速度约束共4
      * 综上，共有(41 * segment - 24)个非零项 */
-    //A_x = new c_float[41 * segment - 24];
+    A_x = new c_float[41 * segment - 24];
+    A_i = new c_int[41 * segment - 24];
+    l = new c_float[5 * segment];
+    u = new c_float[5 * segment];
 }
 
 MiniSnap::~MiniSnap(void)
@@ -28,7 +31,7 @@ MiniSnap::~MiniSnap(void)
 
 }
 
-void MiniSnap::SetParas(std::vector<double> p_proportion, double p_T)
+void MiniSnap::SetParas(std::vector<double> p_proportion, double p_T, std::vector<double> p_point, std::vector<double> p_vel)
 {
     T = p_T;
 
@@ -126,49 +129,78 @@ void MiniSnap::SetParas(std::vector<double> p_proportion, double p_T)
         Aeq.block(5 * segment - 1 , 6 * (segment - 1) , 1 , 4) = v3; 
     }
 
+    /* 更新A_x & A_i & A_p*/
+    std::vector<int> A_pVector;
+    A_pVector.push_back(0);
+    int A_xIndex = 0;
+    int A_iIndex = 0;
+    // int A_pIndex = 0;
+    int A_pNum = 0;
 
-
-
-    int sum = 0;
-    for(int i = 0 ; i < 5 * segment ; i++)
+    for(int j = 0 ; j < 6 * segment ; j++)
     {
-        for(int j = 0 ; j < 6 * segment ; j++)
+        for(int i = 0 ; i < 5 * segment ; i++)
         {
             if(Aeq(i,j)<-0.0000001 || Aeq(i,j)>0.0000001)
             {
-                sum += 1;
+                A_x[A_xIndex++] = Aeq(i , j);
+                A_i[A_iIndex++] = i;
+                A_pNum++;
             }
         }
+        A_pVector.push_back(A_pNum);
     }
-    std::cout<<"++++++++++++++++++++++++++++++++++++++++++++++++++ "<<sum<<std::endl;
+    A_p = new c_int[(int)A_pVector.size()];
+    for(int i = 0 ; i < (int)A_pVector.size() ; i++)
+    {
+        A_p[i] = A_pVector[i];
+    }
+    
 
-
-
-
-
-
-
-
-
-
-
-
-    /* 更新A_x */
+    std::cout<<"++++++++++++++++++++++++++++++++++++++++++++++++++ "<<A_xIndex<<std::endl;
+    for(int i = 0 ; i < A_xIndex ; i++)
+    {
+        std::cout<<A_x[i]<<"    "<<A_i[i]<<std::endl;
+    }
+    std::cout<<"================================================== "<<A_pNum<<std::endl;
+    for(int i = 0 ; i < (int)A_pVector.size() ; i++)
+    {
+        std::cout<<A_pVector[i]<<std::endl;
+    }
 
     /* 更新A_nnz */
+    A_nnz = sizeof(A_x);
 
-    /* 更新A_i */
-
-    /* 更新A_p */
-
-    /* 更新l */
-
-    /* 更新u */
+    /* 更新l & u*/
+    /* 第一组约束 */
+    for(int i = 0 ; i < (segment + 1) ; i++)
+    {
+        l[i] = p_point[i];
+        u[i] = p_point[i];
+    }
+    /* 第二组约束 */
+    for(int i = 0 ; i < 3 * (segment - 1) ; i++)
+    {   
+        l[segment + 1 + i] = 0.0;
+        u[segment + 1 + i] = 0.0;
+    }
+    /* 第三组约束 */
+    for(int i = 0 ; i < (segment + 1) ; i++)
+    {
+        l[4 * segment - 2 + i] = p_vel[i];
+        u[4 * segment - 2 + i] = p_vel[i];     
+    }
+    /* 第四组约束 */
+    {
+        l[5 * segment - 1] = 0.0; 
+        u[5 * segment - 1] = 0.0; 
+    }
 
     /* 更新n */
+    n = 6 * segment;
 
     /* 更新m */
-
+    m = 5 * segment;
 }
 
 void MiniSnap::SolveOpt()
@@ -227,9 +259,5 @@ void MiniSnap::SolveOpt()
     c_free(data->P);
     c_free(data);
     c_free(settings);
-}
-
-void MiniSnap::PrintInfo()
-{
-    
+    delete []A_p;
 }
