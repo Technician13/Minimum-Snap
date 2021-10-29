@@ -1,1 +1,0 @@
-/usr/bin/c++  -std=c++11  -O3 -Wall   CMakeFiles/MINI_SNAP.dir/main.cpp.o CMakeFiles/MINI_SNAP.dir/MiniSnap.cpp.o  -o MINI_SNAP -Wl,-rpath,/usr/local/lib /usr/local/lib/libosqp.so /usr/local/lib/libosqp.a 

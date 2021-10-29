@@ -1,3 +1,0 @@
-/home/donglin/MinimumSnap Traj/MinimumSnap_OSQP/build/CMakeFiles/rebuild_cache.dir
-/home/donglin/MinimumSnap Traj/MinimumSnap_OSQP/build/CMakeFiles/MINI_SNAP.dir
-/home/donglin/MinimumSnap Traj/MinimumSnap_OSQP/build/CMakeFiles/edit_cache.dir

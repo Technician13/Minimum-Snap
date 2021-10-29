@@ -1,7 +1,7 @@
 /*
  * @Author: Technician13
  * @Date: 2021-10-03 14:03:27
- * @LastEditTime: 2021-10-05 11:06:30
+ * @LastEditTime: 2021-10-29 17:04:19
  * @LastEditors: Technician13
  * @Description: 
  */
@@ -36,6 +36,7 @@ void MiniSnap::SetParas(std::vector<double> p_proportion, double p_T, std::vecto
     T = p_T;
 
     /* 更新衔接点的时刻 */
+    t.clear();
     t.push_back(0.0);
     for(int i = 0 ; i < segment ; i++)
     {
@@ -46,6 +47,14 @@ void MiniSnap::SetParas(std::vector<double> p_proportion, double p_T, std::vecto
         }
         t.push_back(temp * T);
     }
+    #ifdef MINISNAP_TEST
+        std::cout<<" [ 衔接点的时刻 ] "<<std::endl;
+        for(int i = 0 ; i < t.size() ; i++)
+        {
+            std::cout<<t[i]<<"    ";
+        }
+        std::cout<<std::endl;
+    #endif
 
     /* 更新P_x */
     for(int i = 1 ; i <= segment ; i++)
@@ -55,9 +64,21 @@ void MiniSnap::SetParas(std::vector<double> p_proportion, double p_T, std::vecto
         P_x[4 * (i - 1) + 2] = 1440.0 * (pow(t[i] , 2) - pow(t[i-1] , 2));
         P_x[4 * (i - 1) + 3] = 576.0 * (t[i] - t[i-1]);
     }
+    #ifdef MINISNAP_TEST
+        std::cout<<" [ P_x ] "<<std::endl;
+        for(int i = 1 ; i <= segment ; i++)
+        {
+            std::cout<<P_x[4 * (i - 1)]<<"    "<<P_x[4 * (i - 1) + 1]<<"    "<<P_x[4 * (i - 1) + 2]<<"    "<<P_x[4 * (i - 1) + 3]<<"    ";
+        }
+        std::cout<<std::endl;
+    #endif
 
     /* 更新P_nnz */
     P_nnz = sizeof(P_x);
+    #ifdef MINISNAP_TEST
+        std::cout<<" [ P_nnz ] "<<std::endl;
+        std::cout<<P_nnz<<std::endl;
+    #endif
 
     /* 更新P_i */
     for(int i = 0 ; i < segment ; i++)
@@ -67,6 +88,14 @@ void MiniSnap::SetParas(std::vector<double> p_proportion, double p_T, std::vecto
         P_i[4 * i + 2] = 6 * i;
         P_i[4 * i + 3] = 6 * i + 1;
     }
+    #ifdef MINISNAP_TEST
+        std::cout<<" [ P_i ] "<<std::endl;
+        for(int i = 0 ; i < segment ; i++)
+        {
+            std::cout<<P_i[4 * i]<<"    "<<P_i[4 * i + 1]<<"    "<<P_i[4 * i + 2]<<"    "<<P_i[4 * i + 3]<<"    ";
+        }
+        std::cout<<std::endl;
+    #endif
 
     /* 更新P_p */
     P_p[0] = 0;
@@ -79,12 +108,28 @@ void MiniSnap::SetParas(std::vector<double> p_proportion, double p_T, std::vecto
         P_p[6 * i + 5] = 4 * i + 4;
         P_p[6 * i + 6] = 4 * i + 4;
     }
+    #ifdef MINISNAP_TEST
+        std::cout<<" [ P_p ] "<<std::endl;
+        for(int i = 0 ; i < segment ; i++)
+        {
+            std::cout<<P_p[6 * i + 1]<<"    "<<P_p[6 * i + 2]<<"    "<<P_p[6 * i + 3]<<"    "<<P_p[6 * i + 4]<<"    "<<P_p[6 * i + 5]<<"    "<<P_p[6 * i + 6]<<"    ";
+        }
+        std::cout<<std::endl;
+    #endif
 
     /* 更新q */
-    for(int i = 0 ; i < (int)sizeof(q) ; i++)
+    for(int i = 0 ; i < 6 * segment ; i++)
     {
         q[i] = 0.0;
     }
+    #ifdef MINISNAP_TEST
+        std::cout<<" [ q ] "<<std::endl;
+        for(int i = 0 ; i < 6 * segment ; i++)
+        {
+            std::cout<<q[i]<<"    ";
+        }
+        std::cout<<std::endl;
+    #endif
 
     Eigen::MatrixXd Aeq;
     Aeq.resize(5 * segment , 6 * segment);
@@ -128,13 +173,16 @@ void MiniSnap::SetParas(std::vector<double> p_proportion, double p_T, std::vecto
         v3 << 20 * pow(t[segment] , 3) , 12 * pow(t[segment] , 2) , 6 * pow(t[segment] , 1) , 2 *pow(t[segment] , 0);
         Aeq.block(5 * segment - 1 , 6 * (segment - 1) , 1 , 4) = v3; 
     }
+    #ifdef MINISNAP_TEST
+        std::cout<<" [ Aeq ] "<<std::endl;
+        std::cout<<Aeq<<std::endl;
+    #endif
 
     /* 更新A_x & A_i & A_p*/
     std::vector<int> A_pVector;
     A_pVector.push_back(0);
     int A_xIndex = 0;
     int A_iIndex = 0;
-    // int A_pIndex = 0;
     int A_pNum = 0;
 
     for(int j = 0 ; j < 6 * segment ; j++)
@@ -154,19 +202,20 @@ void MiniSnap::SetParas(std::vector<double> p_proportion, double p_T, std::vecto
     for(int i = 0 ; i < (int)A_pVector.size() ; i++)
     {
         A_p[i] = A_pVector[i];
-    }
-    
+    }  
+    #ifdef MINISNAP_TEST
+        std::cout<<"[ A_x  &  A_i ] "<<std::endl;
+        for(int i = 0 ; i < A_xIndex ; i++)
+        {
+            std::cout<<A_x[i]<<"    "<<A_i[i]<<std::endl;
+        }
 
-    std::cout<<"++++++++++++++++++++++++++++++++++++++++++++++++++ "<<A_xIndex<<std::endl;
-    for(int i = 0 ; i < A_xIndex ; i++)
-    {
-        std::cout<<A_x[i]<<"    "<<A_i[i]<<std::endl;
-    }
-    std::cout<<"================================================== "<<A_pNum<<std::endl;
-    for(int i = 0 ; i < (int)A_pVector.size() ; i++)
-    {
-        std::cout<<A_pVector[i]<<std::endl;
-    }
+        std::cout<<"[ A_p ] "<<std::endl;
+        for(int i = 0 ; i < (int)A_pVector.size() ; i++)
+        {
+            std::cout<<A_p[i]<<std::endl;
+        }
+    #endif
 
     /* 更新A_nnz */
     A_nnz = sizeof(A_x);
@@ -190,6 +239,7 @@ void MiniSnap::SetParas(std::vector<double> p_proportion, double p_T, std::vecto
         l[4 * segment - 2 + i] = p_vel[i];
         u[4 * segment - 2 + i] = p_vel[i];     
     }
+
     /* 第四组约束 */
     {
         l[5 * segment - 1] = 0.0; 
@@ -207,7 +257,7 @@ void MiniSnap::SolveOpt()
 {
     // Problem settings
     OSQPSettings *settings = (OSQPSettings *)c_malloc(sizeof(OSQPSettings));
-
+    
     // Structures
     OSQPWorkspace *work; // Workspace
     OSQPData *data;      // OSQPData
@@ -224,6 +274,10 @@ void MiniSnap::SolveOpt()
 
     // Define Solver settings as default
     osqp_set_default_settings(settings);
+    settings->polish = 1;
+    settings->max_iter = 40000;
+    settings->eps_prim_inf = 10.0;
+    settings->sigma = 0.005;
 
     // Setup workspace
     work = osqp_setup(data, settings);
@@ -231,18 +285,85 @@ void MiniSnap::SolveOpt()
     // Solve Problem
     osqp_solve(work);
 
-    std::cout<<"================================================================================================="<<std::endl;
-    std::cout << "res: " <<std::endl<<std::endl;
-    for(int i = 0 ; i < segment ; i++)
-    {
-        for(int j = 0 ; j < 6 ; j++)
+    #ifdef MINISNAP_TEST 
+        std::cout<<"========================================================================================="<<std::endl;   
+        std::cout << "[ res ]" <<std::endl<<std::endl;
+        for(int i = 0 ; i < segment ; i++)
         {
-            std::cout << work->solution->x[6 * i + j] << " ";
+            for(int j = 0 ; j < 6 ; j++)
+            {
+                std::cout << work->solution->x[6 * i + j] << " ";
+            }
+            std::cout << std::endl;
         }
-        std::cout << std::endl << std::endl;
-    }
-    std::cout<<"================================================================================================="<<std::endl;
 
+        std::cout<<"========================================================================================="<<std::endl;
+        std::cout<<"[ Pos ]"<<std::endl;
+        std::cout<<work->solution->x[0] * pow(0.5 * T , 5) +
+                   work->solution->x[1] * pow(0.5 * T , 4) +
+                   work->solution->x[2] * pow(0.5 * T , 3) +
+                   work->solution->x[3] * pow(0.5 * T , 2) +
+                   work->solution->x[4] * pow(0.5 * T , 1) +
+                   work->solution->x[5] * pow(0.5 * T , 0)<<"    ";
+        std::cout<<work->solution->x[6] * pow(0.5 * T , 5) +
+                   work->solution->x[7] * pow(0.5 * T , 4) +
+                   work->solution->x[8] * pow(0.5 * T , 3) +
+                   work->solution->x[9] * pow(0.5 * T , 2) +
+                   work->solution->x[10] * pow(0.5 * T , 1) +
+                   work->solution->x[11] * pow(0.5 * T , 0)<<std::endl;
+        
+        std::cout<<"[ Vel ]"<<std::endl;
+        std::cout<<5 * work->solution->x[0] * pow(0.5 * T , 4) +
+                   4 * work->solution->x[1] * pow(0.5 * T , 3) +
+                   3 * work->solution->x[2] * pow(0.5 * T , 2) +
+                   2 * work->solution->x[3] * pow(0.5 * T , 1) +
+                   1 * work->solution->x[4] * pow(0.5 * T , 0)<<"    ";
+        std::cout<<5 * work->solution->x[6] * pow(0.5 * T , 4) +
+                   4 * work->solution->x[7] * pow(0.5 * T , 3) +
+                   3 * work->solution->x[8] * pow(0.5 * T , 2) +
+                   2 * work->solution->x[9] * pow(0.5 * T , 1) +
+                   1 * work->solution->x[10] * pow(0.5 * T , 0)<<std::endl;
+
+        std::cout<<"[ Acc ]"<<std::endl;
+        std::cout<<4 * 5 * work->solution->x[0] * pow(0.5 * T , 3) +
+                   3 * 4 * work->solution->x[1] * pow(0.5 * T , 2) +
+                   2 * 3 * work->solution->x[2] * pow(0.5 * T , 1) +
+                   1 * 2 * work->solution->x[3] * pow(0.5 * T , 0)<<"    ";
+        std::cout<<4 * 5 * work->solution->x[6] * pow(0.5 * T , 3) +
+                   3 * 4 * work->solution->x[7] * pow(0.5 * T , 2) +
+                   2 * 3 * work->solution->x[8] * pow(0.5 * T , 1) +
+                   1 * 2 * work->solution->x[9] * pow(0.5 * T , 0)<<std::endl;
+
+        std::cout<<"========================================================================================="<<std::endl;
+        std::cout<<"[ Pos-continuous ]"<<std::endl;
+        for(int i = 0 ; i < 2 ; i++)
+        {
+            for(int j = 0 ; j < 10 ; j++)
+            {
+                std::cout<<work->solution->x[6 * i + 0] * pow(0.5 * i * T + 0.05 * j * T , 5) +
+                           work->solution->x[6 * i + 1] * pow(0.5 * i * T + 0.05 * j * T , 4) +
+                           work->solution->x[6 * i + 2] * pow(0.5 * i * T + 0.05 * j * T , 3) +
+                           work->solution->x[6 * i + 3] * pow(0.5 * i * T + 0.05 * j * T , 2) +
+                           work->solution->x[6 * i + 4] * pow(0.5 * i * T + 0.05 * j * T , 1) +
+                           work->solution->x[6 * i + 5] * pow(0.5 * i * T + 0.05 * j * T , 0)<<std::endl;
+            }
+        }
+
+        std::cout<<"========================================================================================="<<std::endl;
+        std::cout<<"[ Vel-continuous ]"<<std::endl;
+        for(int i = 0 ; i < 2 ; i++)
+        {
+            for(int j = 0 ; j < 10 ; j++)
+            {
+                std::cout<<5 * work->solution->x[6 * i + 0] * pow(0.5 * i * T + 0.05 * j * T , 4) +
+                           4 * work->solution->x[6 * i + 1] * pow(0.5 * i * T + 0.05 * j * T , 3) +
+                           3 * work->solution->x[6 * i + 2] * pow(0.5 * i * T + 0.05 * j * T , 2) +
+                           2 * work->solution->x[6 * i + 3] * pow(0.5 * i * T + 0.05 * j * T , 1) +
+                           1 * work->solution->x[6 * i + 4] * pow(0.5 * i * T + 0.05 * j * T , 0)<<std::endl;
+            }
+        }     
+    #endif
+    
     // Clean workspace
     osqp_cleanup(work);
     c_free(data->A);

@@ -1,7 +1,7 @@
 /*
  * @Author: Technician13
  * @Date: 2021-10-03 14:03:49
- * @LastEditTime: 2021-10-05 11:09:09
+ * @LastEditTime: 2021-10-27 16:08:10
  * @LastEditors: Technician13
  * @Description: 
  */
@@ -15,6 +15,8 @@
 #include <vector>
 #include <math.h>
 #include <string>
+
+#define   MINISNAP_TEST
 
 class MiniSnap
 {
