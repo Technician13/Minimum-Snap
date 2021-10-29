@@ -12,7 +12,8 @@ Untitled
 These are the results of project in `MinimumSnap_MATLAB`:         
 <div align=center><img src=https://github.com/Technician13/MinimumSnap/blob/master/MinimumSnap_MATLAB/res/res_data.png></div>       
 <div align=center><img src=https://github.com/Technician13/MinimumSnap/blob/master/MinimumSnap_MATLAB/res/res_1.png></div>        
-<div align=center><img src=https://github.com/Technician13/MinimumSnap/blob/master/MinimumSnap_MATLAB/res/res_2.png></div>      
+<div align=center><img src=https://github.com/Technician13/MinimumSnap/blob/master/MinimumSnap_MATLAB/res/res_2.png></div>              
+
 * `MinimumSnap_OSQP` contains the version using OSQP 0.4.1 & Eigen, download the project and run the following commands, OSQP will solve the problem quickly.In this project, we use the first demo in 
 `MinimumSnap_MATLAB` to verify that the code is correct.
 ```
@@ -23,6 +24,6 @@ cmake ..
 make -j
 ./MINI_SNAP
 ```
-This is the result of project in `MinimumSnap_OSQP`:           
-![image]( https://github.com/Technician13/MinimumSnap/blob/master/MinimumSnap_OSQP/res/res_1.png)              
+This is the result of project in `MinimumSnap_OSQP`:                  
+<div align=center><img src=https://github.com/Technician13/MinimumSnap/blob/master/MinimumSnap_OSQP/res/res_1.png></div>              
 We can  find that the result is consistent with the one in `MinimumSnap_MATLAB`.
