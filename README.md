@@ -9,6 +9,10 @@ to verify the higher-order continuity of this trajectory planning method.
 ```
 Untitled
 ```
+These are the results of project in `MinimumSnap_MATLAB`:         
+![image]( https://github.com/Technician13/MinimumSnap/blob/master/MinimumSnap_MATLAB/res/res_data.png)     
+![image]( https://github.com/Technician13/MinimumSnap/blob/master/MinimumSnap_MATLAB/res/res_1.png)          
+![image]( https://github.com/Technician13/MinimumSnap/blob/master/MinimumSnap_MATLAB/res/res_2.png)      
 * `MinimumSnap_OSQP` contains the version using OSQP 0.4.1 & Eigen, download the project and run the following commands, OSQP will solve the problem quickly.In this project, we use the first demo in 
 `MinimumSnap_MATLAB` to verify that the code is correct.
 ```
